@@ -5,11 +5,17 @@ var io = require('socket.io-client');
 
 var MTGOX_SOCKET_URL = 'https://socketio.mtgox.com/mtgox';
 var MTGOX_CHANNELS = [];
+var CURRENCY = 'USD';
 
 try {
   var config = JSON.parse(fs.readFileSync(__dirname + '/config.json'));
   if (Array.isArray(config.channels)) {
     MTGOX_CHANNELS = config.channels;
+  }
+  var currency = config ? config.currency : false;
+  if (currency) {
+    CURRENCY = currency;
+    MTGOX_SOCKET_URL += '?Currency=' + currency;
   }
 }
 catch(ex) {
@@ -17,15 +23,20 @@ catch(ex) {
   util.debug('Failed to parse config.json. No channels available.');
 }
 
-var getChannel = function(key) {
+var getChannel = function(key, currency) {
+  currency = currency || CURRENCY;
+
   return MTGOX_CHANNELS.filter(function(channel) {
-    return (channel.key == key || channel.private == key);
+    var channelCurrency = channel.currency || CURRENCY;
+    return ((channel.key == key || channel.private == key) && channelCurrency == currency);
   })[0];
 };
+
 
 var MtGoxClient = function() {
   events.EventEmitter.call(this);
   var self = this;
+  console.log('try to connect to ', MTGOX_SOCKET_URL);
   var socket = io.connect(MTGOX_SOCKET_URL);
 
   socket.on('message', function(raw) {
@@ -55,12 +66,12 @@ var MtGoxClient = function() {
     self.emit('error', error);
   });
 
-  socket.on('open', function() {
-    self.emit('open');
+  socket.on('connect', function() {
+    self.emit('connect');
   });
 
-  socket.on('close', function() {
-    self.emit('close');
+  socket.on('disconnect', function() {
+    self.emit('disconnect');
   });
 
   self.subscribe = function(channel) {
@@ -76,7 +87,7 @@ var MtGoxClient = function() {
       "op": "unsubscribe",
       "channel": channel
     };
-    console.log('message');
+    console.log('message', channel);
     socket.send(message);
   };
 

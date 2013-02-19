@@ -8,11 +8,15 @@ var lastTickerPrice = -1;
 var lastTickerVolume = -1;
 var client = mtgox.connect();
 
-client.on('open', function() {
+client.on('connect', function() {
   // Good place to unsubscribe from unwanted channels
   // client.unsubscribe(mtgox.getChannel('trade').key);
   client.unsubscribe(mtgox.getChannel('depth').key);
   // client.unsubscribe(mtgox.getChannel('ticker').key);
+});
+
+client.on('disconnect', function() {
+  console.log('disconnect');
 });
 
 client.on('error', function(message) {
@@ -21,6 +25,8 @@ client.on('error', function(message) {
 
 client.on('subscribe', function(message) {
   renderSubscribeMessage(message);
+  var channel = mtgox.getChannel('')
+  var isDepth = message
 });
 
 client.on('unsubscribe', function(message) {
@@ -134,16 +140,27 @@ var getTradeFormat = function(trade, lastPrice) {
   return format;
 };
 
+
 var getChannelFormat = function(message) {
   var channel = mtgox.getChannel(message.channel) || message.channel;
-  return channel.name.magenta;
+
+  var channelName = channel.name;
+  var name = channelName ? channelName : channel;
+
+  if (!channelName) {
+    console.log('getChannelFormat()', message);
+  }
+
+  return name.magenta;
 };
+
 
 var getTimeFormat = function() {
   var now = new Date();
   var time = '[' + datetime.format(now, '%T') + ']';
   return time.blue;
 };
+
 
 var getPriceFormat = function(currentPrice, lastPrice, currency) {
   var format = currentPrice + (currency ? ' ' + currency : '');

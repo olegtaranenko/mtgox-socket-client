@@ -1,7 +1,11 @@
 {
 	"channels": [
-		{ "key":"dbf1dee9-4f2e-4a08-8cb7-748919a71b21", "private":"trade", "name":"Trade" },
-		{ "key":"d5f06780-30a8-4a48-a2f8-7ed181b4a13f", "private":"ticker", "name":"Ticker" },
-		{ "key":"24e67e0d-1cad-4cc0-9e7a-f8523ef460fe", "private":"depth", "name":"Market Depth" }
-	]
+		{ "key":"dbf1dee9-4f2e-4a08-8cb7-748919a71b21", "private":"trade", "name":"Trade", "currency": "USD" },
+		{ "key":"d5f06780-30a8-4a48-a2f8-7ed181b4a13f", "private":"ticker", "name":"Ticker", "currency": "USD"},
+		{ "key":"24e67e0d-1cad-4cc0-9e7a-f8523ef460fe", "private":"depth", "name":"Market Depth", "currency": "USD" },
+    { "key":"dbf1dee9-4f2e-4a08-8cb7-748919a71b21", "private":"trade", "name":"Trade", "currency": "EUR" },
+    { "key":"0bb6da8b-f6c6-4ecf-8f0d-a544ad948c15", "private":"ticker", "name":"Ticker EUR", "currency": "EUR" },
+    { "key":"057bdc6b-9f9c-44e4-bc1a-363e4443ce87", "private":"depth", "name":"Market Depth EUR", "currency": "EUR" }
+	],
+  "currency": "USD"
 }
