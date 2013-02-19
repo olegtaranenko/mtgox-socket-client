@@ -76,6 +76,7 @@ var MtGoxClient = function() {
       "op": "unsubscribe",
       "channel": channel
     };
+    console.log('message');
     socket.send(message);
   };
 

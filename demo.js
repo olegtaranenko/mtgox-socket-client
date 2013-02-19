@@ -11,8 +11,12 @@ var client = mtgox.connect();
 client.on('open', function() {
   // Good place to unsubscribe from unwanted channels
   // client.unsubscribe(mtgox.getChannel('trade').key);
-  // client.unsubscribe(mtgox.getChannel('depth').key);
+  client.unsubscribe(mtgox.getChannel('depth').key);
   // client.unsubscribe(mtgox.getChannel('ticker').key);
+});
+
+client.on('error', function(message) {
+  renderErrorMessage(message);
 });
 
 client.on('subscribe', function(message) {
@@ -42,6 +46,11 @@ process.on('exit', function() {
   console.log('Goodbye!'.bold);
   client.close();
 });
+
+var renderErrorMessage = function(message) {
+  var format = 'Error by connect:'.red;
+  console.log(getTimeFormat(), format);
+};
 
 var renderSubscribeMessage = function(message) {
   var format = 'Subscribed to channel:'.green;
@@ -73,7 +82,7 @@ var getDepthFormat = function(depth) {
   }
   else {
     format += '- '.grey;
-  };
+  }
 
   if (depth.type_str == 'ask') {
     format += 'Ask: '.grey.bold;
@@ -126,7 +135,7 @@ var getTradeFormat = function(trade, lastPrice) {
 };
 
 var getChannelFormat = function(message) {
-  var channel = mtgox.getChannel(message.channel)||message.channel;
+  var channel = mtgox.getChannel(message.channel) || message.channel;
   return channel.name.magenta;
 };
 
